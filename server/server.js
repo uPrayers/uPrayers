@@ -1,17 +1,16 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const { Configuration, OpenAIApi } = require('openai');
+const OpenAI = require('openai');
 
 dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const configuration = new Configuration({
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
-const openai = new OpenAIApi(configuration);
 
 function buildPrompt(situation, religion) {
   return `Write a short, comforting prayer of 100 words or less. It should be grounded in the following religion: ${religion}, and respond to this situation: ${situation}. Keep it respectful and uplifting.`;
@@ -24,15 +23,16 @@ app.post('/api/generate-prayer', async (req, res) => {
   }
 
   try {
-    const response = await openai.createChatCompletion({
+    const completion = await openai.chat.completions.create({
       model: 'gpt-4',
       messages: [{ role: 'user', content: buildPrompt(situation, religion) }],
       temperature: 0.8
     });
-    const prayer = response.data.choices[0].message.content.trim();
+
+    const prayer = completion.choices[0].message.content.trim();
     res.json({ prayer });
   } catch (error) {
-    console.error(error);
+    console.error('OpenAI error:', error);
     res.status(500).json({ error: 'Error generating prayer' });
   }
 });
