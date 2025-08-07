@@ -1,0 +1,1 @@
+// uPrayers App component goes here (omitted for brevity)
