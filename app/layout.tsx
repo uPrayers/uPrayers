@@ -1,3 +1,4 @@
+import "./globals.css";
 export const metadata = {
   title: "uPrayers",
   description: "Receive and share short, compassionate prayers.",
