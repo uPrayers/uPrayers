@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GeneratePrayerSchema } from "@/lib/validators";
-import { getOpenAI } from "@/lib/openai";
-import { createPrayer } from "@/lib/prayer";
+import { GeneratePrayerSchema } from "../../../src/lib/validators";
+import { getOpenAI } from "../../../src/lib/openai";
+import { createPrayer } from "../../../src/lib/prayer";
+
 
 export const dynamic = "force-dynamic";
 
