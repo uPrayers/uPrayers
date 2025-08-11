@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { ListPrayersSchema, SavePrayerSchema } from "@/lib/validators";
-import { moderateText } from "@/lib/moderation";
-import { getOpenAI } from "@/lib/openai";
+import { prisma } from "../../../src/lib/prisma";
+import { ListPrayersSchema, SavePrayerSchema } from "../../../src/lib/validators";
+import { moderateText } from "../../../src/lib/moderation";
+import { getOpenAI } from "../../../src/lib/openai";
 
 export const dynamic = "force-dynamic";
 
