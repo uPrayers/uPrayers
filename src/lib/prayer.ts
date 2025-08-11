@@ -1,5 +1,5 @@
-import { GeneratePrayerInput } from "@/lib/validators";
-import { MODEL } from "@/lib/openai";
+import { GeneratePrayerInput } from "./validators";
+import { MODEL } from "./openai";
 import OpenAI from "openai";
 
 export function buildSystemPrompt() {
