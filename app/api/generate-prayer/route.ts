@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "app/api/generate-prayer/route.ts";
+import { NextRequest, NextResponse } from "next/server";
 import { GeneratePrayerSchema } from "../../../src/lib/validators";
 import { getOpenAI } from "../../../src/lib/openai";
 import { createPrayer } from "../../../src/lib/prayer";
