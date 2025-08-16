@@ -127,7 +127,7 @@ export default function PrayerForm() {
       <div className="card">
         <div className="section">
           <h1>uPrayers</h1>
-          <p className="lead">Share your situation, choose your tradition, and receive a short, compassionate prayer. You can post it to the wall for others to see.</p>
+          <p className="lead">Share your situation, choose your tradition, and receive a short, compassionate prayer. You can post it to the wall for others to see, or copy it to your clipboard to save and share yourself.</p>
           {notice && <div className="note" role="status" aria-live="polite">{notice}</div>}
           {error && <div className="error" role="alert">{error}</div>}
         </div>
