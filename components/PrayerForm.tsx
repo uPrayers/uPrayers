@@ -11,12 +11,26 @@ type Prayer = {
   text: string;
 };
 
-const PAGE_SIZE = 20;
+const RELIGIONS = [
+  "Catholic",
+  "Protestant",
+  "Non-Denominational",
+  "Latter-day Saint",
+  "Orthodox",
+  "Jewish",
+  "Muslim",
+  "Hindu",
+  "Buddhist",
+  "Secular",
+  "Other",
+];
+
+const PAGE_SIZE = 20; // per your preference: show most recent 20 before "Load more"
 
 export default function PrayerForm() {
   const [name, setName] = React.useState("");
   const [location, setLocation] = React.useState("");
-  const [religion, setReligion] = React.useState("Christian");
+  const [religion, setReligion] = React.useState(RELIGIONS[1]); // Protestant by default
   const [situation, setSituation] = React.useState("");
 
   const [loading, setLoading] = React.useState(false);
@@ -24,7 +38,13 @@ export default function PrayerForm() {
   const [wall, setWall] = React.useState<Prayer[]>([]);
   const [nextCursor, setNextCursor] = React.useState<string | null>(null);
   const [error, setError] = React.useState<string | null>(null);
+  const [notice, setNotice] = React.useState<string | null>(null);
   const [postBusy, setPostBusy] = React.useState(false);
+
+  function showNotice(msg: string) {
+    setNotice(msg);
+    setTimeout(() => setNotice(null), 2000);
+  }
 
   async function fetchWall(cursor?: string) {
     try {
@@ -38,7 +58,6 @@ export default function PrayerForm() {
       setWall(prev => (cursor ? [...prev, ...data.prayers] : data.prayers));
       setNextCursor(data.nextCursor || null);
     } catch (e: any) {
-      console.error(e);
       setError(e.message);
     }
   }
@@ -61,6 +80,7 @@ export default function PrayerForm() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to generate prayer");
       setGenerated(data.prayer);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (e: any) {
       setError(e.message);
     } finally {
@@ -79,7 +99,8 @@ export default function PrayerForm() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to post");
-      await fetchWall();
+      await fetchWall(); // refresh from top
+      showNotice("Posted to the wall.");
     } catch (e: any) {
       setError(e.message);
     } finally {
@@ -89,7 +110,10 @@ export default function PrayerForm() {
 
   function handleCopy() {
     if (!generated) return;
-    navigator.clipboard.writeText(generated).catch(() => {});
+    navigator.clipboard.writeText(generated).then(
+      () => showNotice("Copied to clipboard."),
+      () => showNotice("Copy failed. Select and copy manually.")
+    );
   }
 
   function handleGenerateNew() {
@@ -98,63 +122,80 @@ export default function PrayerForm() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6 p-4">
-      <h1 className="text-3xl font-bold">uPrayers</h1>
-      <p className="text-sm opacity-80">Describe your situation, choose a faith tradition, and generate a short prayer. Post it to the wall so others can pray for you.</p>
-
-      <div className="grid gap-3">
-        <input className="border rounded p-2" placeholder="First name (optional)" value={name} onChange={(e) => setName(e.target.value)} />
-        <input className="border rounded p-2" placeholder="Location (optional)" value={location} onChange={(e) => setLocation(e.target.value)} />
-        <select className="border rounded p-2" value={religion} onChange={(e) => setReligion(e.target.value)}>
-          <option>Christian-Protestant</option>
-          <option>Christian-Catholic</option>
-          <option>Christian-Non-Denominational</option>
-          <option>Latter-Day Saint</option>
-          <option>Orthodox</option>
-          <option>Jewish</option>
-          <option>Muslim</option>
-          <option>Hindu</option>
-          <option>Buddhist</option>
-          <option>Secular</option>
-          <option>Other</option>
-        </select>
-        <textarea className="border rounded p-2 min-h-[120px]" placeholder="What do you want prayer for?" value={situation} onChange={(e) => setSituation(e.target.value)} />
-        <button className="rounded-xl border px-4 py-2 disabled:opacity-50" onClick={handleGenerate} disabled={loading}>
-          {loading ? "Generating…" : "Generate Prayer"}
-        </button>
-        {error && <div className="text-red-600 text-sm">{error}</div>}
-      </div>
-
-      {generated && (
-        <div className="space-y-3 border rounded-xl p-4 bg-white/50">
-          <h2 className="font-semibold">Your Prayer</h2>
-          <p className="whitespace-pre-wrap">{generated}</p>
-          <div className="flex gap-2 pt-2">
-            <button className="border rounded px-3 py-2" onClick={handleGenerateNew}>Generate New</button>
-            <button className="border rounded px-3 py-2" onClick={handleCopy}>Copy to Clipboard</button>
-            <button className="border rounded px-3 py-2 disabled:opacity-50" onClick={handlePostToWall} disabled={postBusy}>Post to Prayer Wall</button>
+    <div className="grid" style={{ gap: 18 }}>
+      {/* Intro + Form */}
+      <div className="card">
+        <div className="section">
+          <h1>uPrayers</h1>
+          <p className="lead">Share your situation, choose your tradition, and receive a short, compassionate prayer. You can post it to the wall for others to see.</p>
+          {notice && <div className="note" role="status" aria-live="polite">{notice}</div>}
+          {error && <div className="error" role="alert">{error}</div>}
+        </div>
+        <div className="section">
+          <div className="grid">
+            <label className="label" htmlFor="name">First name (optional)</label>
+            <input id="name" className="input" placeholder="e.g., Chris" value={name} onChange={(e) => setName(e.target.value)} />
+          </div>
+          <div className="grid" style={{ marginTop: 10 }}>
+            <label className="label" htmlFor="location">Location (optional)</label>
+            <input id="location" className="input" placeholder="e.g., Atlanta, GA" value={location} onChange={(e) => setLocation(e.target.value)} />
+          </div>
+          <div className="grid" style={{ marginTop: 10 }}>
+            <label className="label" htmlFor="religion">Faith / Tradition</label>
+            <select id="religion" className="select" value={religion} onChange={(e) => setReligion(e.target.value)}>
+              {RELIGIONS.map(r => <option key={r}>{r}</option>)}
+            </select>
+          </div>
+          <div className="grid" style={{ marginTop: 10 }}>
+            <label className="label" htmlFor="situation">What do you want prayer for?</label>
+            <textarea id="situation" className="textarea" placeholder="A sentence or two…" value={situation} onChange={(e) => setSituation(e.target.value)} />
+          </div>
+          <div className="actions" style={{ marginTop: 14 }}>
+            <button className="btn primary" onClick={handleGenerate} disabled={loading}>
+              {loading ? <>Generating<span className="spinner" /></> : "Generate Prayer"}
+            </button>
           </div>
         </div>
-      )}
 
-      <div className="space-y-2 pt-6">
-        <h2 className="text-2xl font-semibold">Prayer Wall</h2>
-        <div className="space-y-3">
-          {wall.length === 0 && <div className="opacity-70">No prayers yet.</div>}
+        {generated && (
+          <div className="section" aria-live="polite">
+            <div className="label" style={{ marginBottom: 8 }}>Your Prayer</div>
+            <div className="card" style={{ padding: 16 }}>
+              <div style={{ whiteSpace: "pre-wrap", lineHeight: 1.6 }}>{generated}</div>
+            </div>
+            <div className="actions" style={{ marginTop: 12 }}>
+              <button className="btn" onClick={handleGenerateNew} disabled={loading}>Generate New</button>
+              <button className="btn ghost" onClick={handleCopy}>Copy to Clipboard</button>
+              <button className="btn primary" onClick={handlePostToWall} disabled={postBusy}>
+                {postBusy ? <>Posting<span className="spinner" /></> : "Post to Prayer Wall"}
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Prayer Wall */}
+      <div className="card">
+        <div className="section">
+          <h2 style={{ margin: 0, fontSize: 22 }}>Prayer Wall</h2>
+          <p className="note" style={{ marginTop: 6 }}>Most recent {Math.min(wall.length, PAGE_SIZE)} shown first.</p>
+        </div>
+        <div className="section grid">
+          {wall.length === 0 && <div className="note">No prayers yet.</div>}
           {wall.map((p) => (
-            <div key={p.id} className="border rounded-xl p-3">
-              <div className="text-sm opacity-60 flex flex-wrap gap-1">
+            <div key={p.id} className="card prayer-item">
+              <div className="meta">
                 <span>{new Date(p.createdAt).toLocaleString()}</span>
                 <span>—</span>
-                <span className="font-medium">{p.religion}</span>
+                <span style={{ fontWeight: 600 }}>{p.religion}</span>
                 {p.name && <span>• {p.name}</span>}
                 {p.location && <span>• {p.location}</span>}
               </div>
-              <div className="pt-2 whitespace-pre-wrap">{p.text}</div>
+              <div style={{ paddingTop: 6, whiteSpace: "pre-wrap", lineHeight: 1.6 }}>{p.text}</div>
             </div>
           ))}
           {nextCursor && (
-            <button className="border rounded px-3 py-2" onClick={() => fetchWall(nextCursor!)}>Load more</button>
+            <button className="btn ghost" onClick={() => fetchWall(nextCursor)}>Load more</button>
           )}
         </div>
       </div>
