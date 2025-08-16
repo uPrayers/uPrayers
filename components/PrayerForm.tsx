@@ -1,8 +1,11 @@
 "use client";
 import React from "react";
 
-// Enhanced UI/UX version: localStorage for name/location/religion, textarea autosize,
-// friendlier loading states, and safer fetch handling.
+// Clean UI/UX version WITHOUT any share code.
+// - LocalStorage for name/location/religion
+// - Textarea autosize
+// - Friendly loading states
+// - Name, Location, Faith order on the wall
 
 type Prayer = {
   id: string;
@@ -14,7 +17,7 @@ type Prayer = {
   text: string;
 };
 
-const RELIGIONS = [
+const RELIGIONS: string[] = [
   "Catholic",
   "Protestant",
   "Non-Denominational",
@@ -28,14 +31,14 @@ const RELIGIONS = [
   "Other",
 ];
 
-const PAGE_SIZE = 20; // shows most recent 20 before "Load more"
+const PAGE_SIZE = 100; // show most recent 100 before "Load more"
 const LS_KEYS = { name: "upr_name", location: "upr_location", religion: "upr_religion" } as const;
 
 export default function PrayerForm() {
-  const [name, setName] = React.useState("");
-  const [location, setLocation] = React.useState("");
-  const [religion, setReligion] = React.useState(RELIGIONS[1]); // Protestant by default
-  const [situation, setSituation] = React.useState("");
+  const [name, setName] = React.useState<string>("");
+  const [location, setLocation] = React.useState<string>("");
+  const [religion, setReligion] = React.useState<string>("Protestant");
+  const [situation, setSituation] = React.useState<string>("");
 
   const [loading, setLoading] = React.useState(false);
   const [generated, setGenerated] = React.useState<string | null>(null);
@@ -55,7 +58,7 @@ export default function PrayerForm() {
     window.setTimeout(() => setNotice(null), 2000);
   }
 
-  // --- Local storage hydration/persistence for convenience ---
+  // --- Local storage hydration/persistence ---
   React.useEffect(() => {
     try {
       const n = localStorage.getItem(LS_KEYS.name);
@@ -63,27 +66,20 @@ export default function PrayerForm() {
       const r = localStorage.getItem(LS_KEYS.religion);
       if (n) setName(n);
       if (l) setLocation(l);
-      if (r && RELIGIONS.includes(r)) setReligion(r as (typeof RELIGIONS)[number]);
+      if (r && RELIGIONS.includes(r)) setReligion(r);
     } catch {}
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  React.useEffect(() => {
-    try { localStorage.setItem(LS_KEYS.name, name); } catch {}
-  }, [name]);
-  React.useEffect(() => {
-    try { localStorage.setItem(LS_KEYS.location, location); } catch {}
-  }, [location]);
-  React.useEffect(() => {
-    try { localStorage.setItem(LS_KEYS.religion, religion); } catch {}
-  }, [religion]);
+  React.useEffect(() => { try { localStorage.setItem(LS_KEYS.name, name); } catch {} }, [name]);
+  React.useEffect(() => { try { localStorage.setItem(LS_KEYS.location, location); } catch {} }, [location]);
+  React.useEffect(() => { try { localStorage.setItem(LS_KEYS.religion, religion); } catch {} }, [religion]);
 
   // --- Textarea autosize ---
   React.useEffect(() => {
     const el = situationRef.current;
     if (!el) return;
     el.style.height = "auto";
-    el.style.height = Math.min(el.scrollHeight, 400) + "px"; // cap height
+    el.style.height = Math.min(el.scrollHeight, 400) + "px";
   }, [situation]);
 
   // --- Wall fetching ---
@@ -107,7 +103,6 @@ export default function PrayerForm() {
       setWallBusy(false);
     }
   }
-
   React.useEffect(() => { fetchWall(); }, []);
 
   // --- Generate prayer ---
@@ -119,7 +114,6 @@ export default function PrayerForm() {
       return;
     }
 
-    // Abort any in-flight request if user clicks repeatedly
     if (generateAbortRef.current) generateAbortRef.current.abort();
     const ctrl = new AbortController();
     generateAbortRef.current = ctrl;
@@ -155,7 +149,7 @@ export default function PrayerForm() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to post");
-      await fetchWall(); // refresh from top
+      await fetchWall();
       showNotice("Posted to the wall.");
     } catch (e: any) {
       setError(e.message);
@@ -180,7 +174,7 @@ export default function PrayerForm() {
   function handleClearForm() {
     setName("");
     setLocation("");
-    setReligion(RELIGIONS[1]);
+    setReligion("Protestant");
     setSituation("");
     setGenerated(null);
   }
@@ -239,7 +233,9 @@ export default function PrayerForm() {
             <div className="card" style={{ padding: 16 }}>
               <div style={{ whiteSpace: "pre-wrap", lineHeight: 1.6 }}>{generated}</div>
             </div>
-            $1
+            <div className="actions" style={{ marginTop: 12 }}>
+              <button className="btn" onClick={handleGenerateNew} disabled={loading}>Generate New</button>
+              <button className="btn ghost" onClick={handleCopy}>Copy to Clipboard</button>
               <button className="btn primary" onClick={handlePostToWall} disabled={postBusy}>
                 {postBusy ? <>Posting<span className="spinner" /></> : "Post to Prayer Wall"}
               </button>
@@ -262,10 +258,12 @@ export default function PrayerForm() {
               <div className="meta">
                 <span>{new Date(p.createdAt).toLocaleString()}</span>
                 <span>—</span>
-                {p.name && <span>{p.name}</span>}
-                {p.location && <span>{p.name ? ' • ' : ''}{p.location}</span>}
                 {(p.name || p.location) ? (
-                  <span> • <span style={{ fontWeight: 600 }}>{p.religion}</span></span>
+                  <>
+                    {p.name && <span>{p.name}</span>}
+                    {p.location && <span>{p.name ? ' • ' : ''}{p.location}</span>}
+                    <span> • <span style={{ fontWeight: 600 }}>{p.religion}</span></span>
+                  </>
                 ) : (
                   <span style={{ fontWeight: 600 }}>{p.religion}</span>
                 )}
