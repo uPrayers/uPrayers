@@ -1,2 +1,117 @@
-/* Global styles for uPrayers */
+/* --- Reset & base --- */
+* { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
+:root{
+  --bg: #f7f7fb;              /* page background */
+  --card: #ffffff;            /* card background */
+  --text: #0f1020;            /* primary text */
+  --muted: #61647a;           /* muted text */
+  --primary: #5b67f1;         /* buttons/links */
+  --primary-600: #4a55d8;
+  --ring: 32 100% 50%;        /* focus ring hue */
+  --shadow: 0 10px 30px rgba(16, 24, 40, 0.08);
+  --radius: 14px;
+}
+
+body { background: var(--bg); color: var(--text); }
+
+.container{
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.site-header{
+  position: sticky; top: 0; z-index: 10;
+  backdrop-filter: saturate(180%) blur(8px);
+  background: color-mix(in oklab, var(--bg), #fff 40%);
+  border-bottom: 1px solid rgba(16,24,40,0.06);
+}
+.header-inner{ display:flex; align-items:center; justify-content:space-between; min-height:64px; }
+.brand{ font-weight: 800; letter-spacing: .2px; font-size: 20px; }
+
+.site-main{ padding: 28px 0 40px; }
+.site-footer{ padding: 32px 0; color: var(--muted); font-size: 13px; }
+
+/* --- Cards & sections --- */
+.card{
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(16,24,40,0.06);
+}
+
+.section{ padding: 18px; }
+.section + .section{ margin-top: 12px; }
+
+h1{ font-size: 28px; margin: 0 0 4px; }
+.lead{ color: var(--muted); margin: 0 0 18px; }
+
+/* --- Inputs --- */
+.label{ font-size: 12px; color: var(--muted); margin-bottom: 6px; display:block; }
+
+.input, .select, .textarea{
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid rgba(16,24,40,0.12);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--text);
+  outline: none;
+}
+.input:focus, .select:focus, .textarea:focus{
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px hsl(var(--ring) / .2);
+}
+.textarea{ min-height: 120px; resize: vertical; }
+
+/* --- Buttons --- */
+.btn{
+  appearance: none;
+  border: 1px solid transparent;
+  background: #e9eaf8;
+  color: #2a2e84;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .05s ease, background .2s ease, border-color .2s ease;
+}
+.btn:hover{ transform: translateY(-1px); }
+.btn:disabled{ opacity: .6; cursor: not-allowed; transform: none; }
+
+.btn.primary{
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary-600);
+}
+.btn.primary:hover{ background: var(--primary-600); }
+
+.btn.ghost{
+  background: transparent;
+  border-color: rgba(16,24,40,0.12);
+  color: var(--text);
+}
+
+/* --- Grid helpers --- */
+.grid{ display:grid; gap: 12px; }
+.actions{ display:flex; gap: 8px; flex-wrap: wrap; }
+
+/* --- Messages --- */
+.note{ font-size: 13px; color: var(--muted); }
+.error{ color: #b42318; background: #fee4e2; border: 1px solid #fda29b; padding: 8px 10px; border-radius: 10px; }
+
+/* --- Wall items --- */
+.prayer-item{ padding: 14px; }
+.meta{ color: var(--muted); font-size: 12px; display:flex; gap:6px; flex-wrap:wrap; }
+
+/* --- Spinner --- */
+.spinner{
+  width: 16px; height: 16px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.6);
+  border-top-color: #fff;
+  animation: spin 1s linear infinite;
+  display:inline-block; vertical-align: middle; margin-left: 8px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
