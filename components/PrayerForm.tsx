@@ -106,14 +106,16 @@ export default function PrayerForm() {
         <input className="border rounded p-2" placeholder="First name (optional)" value={name} onChange={(e) => setName(e.target.value)} />
         <input className="border rounded p-2" placeholder="Location (optional)" value={location} onChange={(e) => setLocation(e.target.value)} />
         <select className="border rounded p-2" value={religion} onChange={(e) => setReligion(e.target.value)}>
-          <option>Christian</option>
+          <option>Christian-Protestant</option>
+          <option>Christian-Catholic</option>
+          <option>Christian-Non-Denominational</option>
+          <option>Latter-Day Saint</option>
+          <option>Orthodox</option>
           <option>Jewish</option>
           <option>Muslim</option>
           <option>Hindu</option>
           <option>Buddhist</option>
           <option>Secular</option>
-          <option>Catholic</option>
-          <option>Orthodox</option>
           <option>Other</option>
         </select>
         <textarea className="border rounded p-2 min-h-[120px]" placeholder="What do you want prayer for?" value={situation} onChange={(e) => setSituation(e.target.value)} />
