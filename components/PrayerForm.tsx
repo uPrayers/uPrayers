@@ -12,8 +12,8 @@ type Prayer = {
 };
 
 const RELIGIONS = [
-  "Catholic",
   "Protestant",
+  "Catholic",
   "Non-Denominational",
   "Latter-day Saint",
   "Orthodox",
