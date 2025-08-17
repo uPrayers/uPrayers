@@ -8,7 +8,9 @@ export default function Home() {
       <div className="grid" style={{ gap: 22 }}>
         <PrayerForm />
       </div>
-      <DonateSection />
+      <div className="mt-16">   {/* adds nice breathing room */}
+        <DonateSection />
+      </div>
       <SiteFooter />
     </main>
   );
