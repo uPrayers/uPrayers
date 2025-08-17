@@ -19,6 +19,7 @@ export default function DonateSection() {
           className="inline-block bg-yellow-500 text-white py-3 px-6 rounded shadow hover:bg-yellow-600 mb-8"
         >
           Donate with Stripe
+          
         </a>
       </div>
     </section>
