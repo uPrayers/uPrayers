@@ -1,12 +1,18 @@
-// app/page.tsx
-import PrayerForm from "../components/PrayerForm";
+import PrayerForm from "@/components/PrayerForm";
+import DonateSection from "@/components/DonateSection";
+import SiteFooter from "@/components/SiteFooter";
 
-export default function HomePage() {
+export default function Home() {
   return (
-    <main className="min-h-screen">
-      <div className="mx-auto max-w-3xl px-4 py-10">
+    <main>
+      {/* Main content container mirrors your existing layout spacing */}
+      <div className="grid" style={{ gap: 22 }}>
         <PrayerForm />
       </div>
+
+      {/* Page-level donate and footer */}
+      <DonateSection />
+      <SiteFooter />
     </main>
   );
 }
