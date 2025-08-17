@@ -1,6 +1,6 @@
 // app/page.tsx
 import Link from "next/link";
-import { DonateButton } from "../components/DonateButton";
+import DonateButton from "../components/DonateButton"; // ✅ no curly braces
 import PrayerForm from "../components/PrayerForm";
 
 export default function HomePage() {
@@ -19,7 +19,7 @@ export default function HomePage() {
               Post to Prayer Wall
             </Link>
 
-            <DonateButton />
+            <DonateButton /> {/* ✅ now resolves correctly */}
           </div>
         </div>
       </div>
