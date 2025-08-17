@@ -21,7 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <div className="brand">uPrayers</div>
               <nav className="actions">
                 <a
-  href="https://buy.stripe.com/your_real_checkout_link"
+  href="https://donate.stripe.com/14AcN6bRv0G3a803gnao800"
   target="_blank"
   rel="noopener noreferrer"
   className="inline-flex items-center rounded-2xl px-4 py-2 text-white bg-emerald-600 hover:bg-emerald-700 shadow"
