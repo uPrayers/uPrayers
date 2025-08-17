@@ -1,7 +1,7 @@
 // components/PrayerForm.tsx
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 type GenerateResponse = {
   prayer?: string;
@@ -11,7 +11,6 @@ type GenerateResponse = {
 export default function PrayerForm() {
   const [loading, setLoading] = useState(false);
   const [prayer, setPrayer] = useState<string | null>(null);
-  const resultRef = useRef<HTMLDivElement>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -40,17 +39,9 @@ export default function PrayerForm() {
       }
 
       setPrayer(data.prayer);
-
-      // Smooth scroll to the generated prayer AFTER it renders
-      requestAnimationFrame(() => {
-        resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
     } catch (err) {
       console.error(err);
       setPrayer("We couldn’t generate a prayer right now. Please try again.");
-      requestAnimationFrame(() => {
-        resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
     } finally {
       setLoading(false);
     }
@@ -98,21 +89,20 @@ export default function PrayerForm() {
         <button
           type="submit"
           disabled={loading}
-          className="inline-flex items-center rounded-2xl px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 shadow focus:outline-none focus:ring-2 focus:ring-indigo-400 disabled:opacity-60"
+          className="inline-flex items-center rounded-2xl px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 shadow disabled:opacity-60"
         >
           {loading ? "Generating…" : "Generate Prayer"}
         </button>
       </form>
 
-      {/* Scroll target for the generated prayer */}
-      <div id="generated-prayer" ref={resultRef} className="scroll-mt-28 mt-8">
-        {prayer && (
+      {prayer && (
+        <div id="generated-prayer" className="mt-8">
           <article className="rounded-xl border p-4 bg-white/70">
             <h3 className="mb-2 text-lg font-semibold">Your Prayer</h3>
             <p className="whitespace-pre-line">{prayer}</p>
           </article>
-        )}
-      </div>
+        </div>
+      )}
     </section>
   );
 }
