@@ -34,7 +34,7 @@ const RELIGIONS: string[] = [
   "Other",
 ];
 
-const PAGE_SIZE = 100; // show most recent 100 before "Load more"
+const PAGE_SIZE = 20; // show most recent 20 before "Load more"
 const LS_KEYS = { name: "upr_name", location: "upr_location", religion: "upr_religion" } as const;
 
 export default function PrayerForm() {
