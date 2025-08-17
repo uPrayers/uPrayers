@@ -55,6 +55,7 @@ export default function PrayerForm() {
 
   const situationRef = React.useRef<HTMLTextAreaElement | null>(null);
   const generateAbortRef = React.useRef<AbortController | null>(null);
+  const formRef = React.useRef<HTMLDivElement | null>(null);
 
   function showNotice(msg: string) {
     setNotice(msg);
@@ -185,9 +186,9 @@ export default function PrayerForm() {
   const generateDisabled = loading || situation.trim().length < 3;
 
   return (
-    <div className="grid" style={{ gap: 18 }}>
+    <div className="grid" style={{ gap: 22 }}>
       {/* Intro + Form */}
-      <div className="card" aria-busy={loading}>
+      <div className="card" aria-busy={loading} ref={formRef}>
         <div className="section">
           <h1>uPrayers</h1>
           <p className="lead">Share your situation, choose your tradition, and receive a short, compassionate prayer. You can post it to the wall for others to see.</p>
@@ -234,9 +235,8 @@ export default function PrayerForm() {
           <div className="section" aria-live="polite">
             <div className="label" style={{ marginBottom: 8 }}>Your Prayer</div>
             <div className="card" style={{ padding: 16 }}>
-               <div className="prayer-quote" style={{ whiteSpace: "pre-wrap" }}>{generated}</div>
+              <div style={{ whiteSpace: "pre-wrap", lineHeight: 1.75 }}>{generated}</div>
             </div>
-
             <div className="actions" style={{ marginTop: 12 }}>
               <button className="btn" onClick={handleGenerateNew} disabled={loading}>Generate New</button>
               <button className="btn ghost" onClick={handleCopy}>Copy to Clipboard</button>
@@ -256,8 +256,21 @@ export default function PrayerForm() {
           <p className="note" style={{ marginTop: 6 }}>Most recent {Math.min(wall.length, PAGE_SIZE)} shown first.</p>
         </div>
         <div className="section grid">
-          {initialWallLoading && <div className="note">Loading wall…</div>}
-          {!initialWallLoading && wall.length === 0 && <div className="note">No prayers yet.</div>}
+          {initialWallLoading && (
+          <div className="card prayer-item" style={{ textAlign: "center", padding: 20 }}>
+            <div style={{ fontSize: 24, marginBottom: 6 }}>🕯️</div>
+            <div className="note">Lighting a candle… loading prayers</div>
+          </div>
+          )}
+          {!initialWallLoading && wall.length === 0 && (
+            <div className="card prayer-item" style={{ textAlign: "center", padding: 20 }}>
+              <div style={{ fontSize: 24, marginBottom: 6 }}>🕯️</div>
+              <div className="note" style={{ marginBottom: 10 }}>No prayers on the wall yet.</div>
+              <button className="btn primary" onClick={() => formRef.current?.scrollIntoView({ behavior: 'smooth' })}>
+                Be the first to post a prayer
+              </button>
+            </div>
+          )}
           {wall.map((p) => (
             <div key={p.id} className="card prayer-item">
               <div className="meta">
@@ -273,7 +286,7 @@ export default function PrayerForm() {
                   <span style={{ fontWeight: 600 }}>{p.religion}</span>
                 )}
               </div>
-              <div style={{ paddingTop: 6, whiteSpace: "pre-wrap", lineHeight: 1.6 }}>{p.text}</div>
+              <div style={{ paddingTop: 6, whiteSpace: "pre-wrap", lineHeight: 1.75 }}>{p.text}</div>
             </div>
           ))}
           {nextCursor && (
