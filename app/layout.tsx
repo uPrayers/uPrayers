@@ -1,7 +1,7 @@
 // app/layout.tsx
 import "./globals.css";
 import { Inter, Crimson_Pro } from "next/font/google";
-import Link from "next/link";
+import DonateButton from "../components/DonateButton"; // ✅ import your Stripe button
 
 export const metadata = {
   title: "uPrayers",
@@ -20,7 +20,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <div className="container header-inner">
               <div className="brand">uPrayers</div>
               <nav className="actions">
-                <Link href="/donate" className="btn primary">Donate</Link>
+                {/* ✅ Stripe Donate button */}
+                <DonateButton />
               </nav>
             </div>
           </header>
