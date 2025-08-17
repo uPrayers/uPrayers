@@ -17,19 +17,9 @@ type Prayer = {
   text: string;
 };
 
-const RELIGIONS: string[] = [
-  "Catholic",
-  "Protestant",
-  "Non-Denominational",
-  "Latter-day Saint",
-  "Orthodox",
-  "Jewish",
-  "Muslim",
-  "Hindu",
-  "Buddhist",
-  "Secular",
-  "Other",
-];
+$1
+// Public donation link used in client (set in Render env as NEXT_PUBLIC_DONATE_URL)
+const DONATE_URL = process.env.NEXT_PUBLIC_DONATE_URL || "/donate";
 
 const PAGE_SIZE = 100; // show most recent 100 before "Load more"
 const LS_KEYS = { name: "upr_name", location: "upr_location", religion: "upr_religion" } as const;
@@ -235,10 +225,9 @@ export default function PrayerForm() {
             </div>
             <div className="actions" style={{ marginTop: 12 }}>
               <button className="btn" onClick={handleGenerateNew} disabled={loading}>Generate New</button>
-              <button className="btn ghost" onClick={handleCopy}>Copy to Clipboard</button>
-              <button className="btn primary" onClick={handlePostToWall} disabled={postBusy}>
-                {postBusy ? <>Posting<span className="spinner" /></> : "Post to Prayer Wall"}
-              </button>
+              $1
+              $1
+              <a className="btn ghost" href={DONATE_URL} target="_blank" rel="noreferrer">Donate</a>
             </div>
           </div>
         )}
@@ -271,11 +260,10 @@ export default function PrayerForm() {
               <div style={{ paddingTop: 6, whiteSpace: "pre-wrap", lineHeight: 1.6 }}>{p.text}</div>
             </div>
           ))}
-          {nextCursor && (
-            <button className="btn ghost" onClick={() => fetchWall(nextCursor)} disabled={wallBusy}>
-              {wallBusy ? <>Loading<span className="spinner" /></> : "Load more"}
-            </button>
-          )}
+          $1
+          <div className="actions" style={{ marginTop: 8 }}>
+            <a className="btn primary" href={DONATE_URL} target="_blank" rel="noreferrer">Donate</a>
+          </div>
         </div>
       </div>
     </div>
