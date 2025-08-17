@@ -89,7 +89,7 @@ export default function PrayerForm() {
         <button
           type="submit"
           disabled={loading}
-          className="btn primary disabled:opacity-60"
+          className="inline-flex items-center rounded-2xl px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 shadow disabled:opacity-60"
         >
           {loading ? "Generating…" : "Generate Prayer"}
         </button>
