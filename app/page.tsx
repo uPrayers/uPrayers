@@ -1,7 +1,7 @@
 // app/page.tsx
 import Link from "next/link";
-import DonateButton from "@/components/DonateButton";
-import PrayerForm from "@/components/PrayerForm";
+import DonateButton from "../components/DonateButton";
+import PrayerForm from "../components/PrayerForm";
 
 export default function HomePage() {
   return (
@@ -24,7 +24,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Rest of page */}
+      {/* Page content */}
       <div className="mx-auto max-w-3xl px-4 py-10">
         <p className="text-slate-700 mb-8">
           Describe your situation, choose your faith tradition, and receive a short prayer.
