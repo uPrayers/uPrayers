@@ -9,14 +9,7 @@ export default function Home() {
         <PrayerForm />
       </div>
 
-      {/* Extra breathing room above the donate block */}
-      <div className="mt-16">
-        <DonateSection />
-      </div>
-
-      {/* Hard spacer so the separation is unmistakable */}
-      <div className="h-10" />
-
+      <DonateSection />
       <SiteFooter />
     </main>
   );
