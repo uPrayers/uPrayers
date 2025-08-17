@@ -16,7 +16,7 @@ export default function DonateSection() {
           href={DONATE_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block bg-yellow-500 text-white py-3 px-6 rounded shadow hover:bg-yellow-600"
+          className="inline-block bg-yellow-500 text-white py-3 px-6 rounded shadow hover:bg-yellow-600 mb-8"
         >
           Donate with Stripe
         </a>
