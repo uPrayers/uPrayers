@@ -19,7 +19,6 @@ export default function PrayerForm() {
     setPrayer(null);
 
     const form = new FormData(e.currentTarget);
-    // Adjust keys to match your API if needed:
     const payload = {
       situation: String(form.get("situation") || "").trim(),
       name: String(form.get("name") || "").trim() || null,
@@ -43,7 +42,6 @@ export default function PrayerForm() {
       setPrayer(data.prayer);
 
       // Smooth scroll to the generated prayer AFTER it renders
-      // rAF ensures the DOM has painted
       requestAnimationFrame(() => {
         resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       });
@@ -106,7 +104,7 @@ export default function PrayerForm() {
         </button>
       </form>
 
-      {/* Where the generated prayer renders; scroll target */}
+      {/* Scroll target for the generated prayer */}
       <div id="generated-prayer" ref={resultRef} className="scroll-mt-28 mt-8">
         {prayer && (
           <article className="rounded-xl border p-4 bg-white/70">
