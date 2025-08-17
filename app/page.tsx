@@ -10,6 +10,10 @@ export default function Home() {
       </div>
 
       <DonateSection />
+
+      {/* 👇 This spacer forces the blank line after Donate, before the footer */}
+      <div className="h-8" />
+
       <SiteFooter />
     </main>
   );
