@@ -1,7 +1,7 @@
 // app/layout.tsx
 import "./globals.css";
 import { Inter, Crimson_Pro } from "next/font/google";
-import DonateButton from "../components/DonateButton"; // Stripe button
+import DonateButton from "../components/DonateButton"; // ✅ import your Stripe button
 
 export const metadata = {
   title: "uPrayers",
