@@ -56,8 +56,6 @@ export default function PrayerForm() {
   const situationRef = React.useRef<HTMLTextAreaElement | null>(null);
   const generateAbortRef = React.useRef<AbortController | null>(null);
   const formRef = React.useRef<HTMLDivElement | null>(null);
-
-  // Ref for the generated prayer section
   const generatedRef = React.useRef<HTMLDivElement | null>(null);
 
   // Respect user preference for reduced motion
@@ -70,24 +68,63 @@ export default function PrayerForm() {
     }
   }, []);
 
-  // Auto-scroll when a new prayer appears; align the section to the top.
+  // --- Utilities: robust scroll to top of the page or nearest scroll container ---
+  function getScrollableAncestor(el: Element | null): Element | Document {
+    let cur: Element | null = el?.parentElement || null;
+    while (cur) {
+      const style = window.getComputedStyle(cur);
+      const overflowY = style.overflowY;
+      const canScrollY =
+        (overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay") &&
+        cur.scrollHeight > cur.clientHeight;
+      if (canScrollY) return cur;
+      cur = cur.parentElement;
+    }
+    // Fall back to the page scroller
+    return document.scrollingElement || document.documentElement;
+  }
+
+  function scrollElToContainerTop(el: HTMLElement, offset = 0) {
+    const scroller = getScrollableAncestor(el);
+    const behavior = prefersReducedMotion ? "auto" : "smooth";
+
+    if (scroller instanceof Element) {
+      // Position relative to that scroll container
+      const top =
+        el.getBoundingClientRect().top - scroller.getBoundingClientRect().top + scroller.scrollTop - offset;
+      scroller.scrollTo({ top, behavior });
+    } else {
+      // Document/page scroll
+      const absoluteTop = el.getBoundingClientRect().top + (window.scrollY || window.pageYOffset) - offset;
+      window.scrollTo({ top: absoluteTop, behavior });
+    }
+  }
+
+  // Auto-scroll when a new prayer appears; align the "Your Prayer" section to the very top.
   React.useEffect(() => {
     if (!generated) return;
-    const id = requestAnimationFrame(() => {
-      const el = generatedRef.current;
-      if (!el) return;
-      try {
-        el.scrollIntoView({
-          behavior: prefersReducedMotion ? "auto" : "smooth",
-          block: "start",
-          inline: "nearest",
-        });
-        el.focus?.();
-      } catch {
-        // no-op
-      }
-    });
-    return () => cancelAnimationFrame(id);
+
+    const ids: number[] = [];
+    ids.push(
+      requestAnimationFrame(() => {
+        ids.push(
+          requestAnimationFrame(() => {
+            const el = generatedRef.current;
+            if (!el) return;
+            try {
+              // If you add a sticky header later, provide its height as `offset` here.
+              scrollElToContainerTop(el, /* offset */ 0);
+              // Keep focus accessible without jump
+              el.focus?.({ preventScroll: true });
+            } catch {
+              // ignore
+            }
+          })
+        );
+      })
+    );
+
+    return () => ids.forEach((id) => cancelAnimationFrame(id));
   }, [generated, prefersReducedMotion]);
 
   function showNotice(msg: string) {
@@ -270,9 +307,8 @@ export default function PrayerForm() {
             id="generated-prayer"
             ref={generatedRef}
             tabIndex={-1}
-            // Give a little breathing room when aligned to the top.
-            // Adjust this number if you later add a sticky header.
-            style={{ scrollMarginTop: 16 }}
+            // If you decide you want spacing above when aligned, add scrollMarginTop or pass a non-zero offset to scrollElToContainerTop.
+            style={{ scrollMarginTop: 0 }}
           >
             <div className="label" style={{ marginBottom: 8 }}>Your Prayer</div>
             <div className="card" style={{ padding: 16 }}>
@@ -294,7 +330,7 @@ export default function PrayerForm() {
       <div className="card">
         <div className="section">
           <h2 style={{ margin: 0, fontSize: 22 }}>Prayer Wall</h2>
-        <p className="note" style={{ marginTop: 6 }}>Most recent {Math.min(wall.length, PAGE_SIZE)} shown first.</p>
+          <p className="note" style={{ marginTop: 6 }}>Most recent {Math.min(wall.length, PAGE_SIZE)} shown first.</p>
         </div>
         <div className="section grid">
           {initialWallLoading && (
