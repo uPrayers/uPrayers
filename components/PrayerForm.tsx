@@ -37,6 +37,9 @@ const RELIGIONS: string[] = [
 const PAGE_SIZE = 20; // show most recent 20 before "Load more"
 const LS_KEYS = { name: "upr_name", location: "upr_location", religion: "upr_religion" } as const;
 
+// If you add a sticky header later, bump this number to match its height.
+const HEADER_OFFSET = 16;
+
 export default function PrayerForm() {
   const [name, setName] = React.useState<string>("");
   const [location, setLocation] = React.useState<string>("");
@@ -56,8 +59,6 @@ export default function PrayerForm() {
   const situationRef = React.useRef<HTMLTextAreaElement | null>(null);
   const generateAbortRef = React.useRef<AbortController | null>(null);
   const formRef = React.useRef<HTMLDivElement | null>(null);
-
-  // Ref for the generated prayer section
   const generatedRef = React.useRef<HTMLDivElement | null>(null);
 
   // Respect user preference for reduced motion
@@ -70,21 +71,22 @@ export default function PrayerForm() {
     }
   }, []);
 
-  // Auto-scroll when a new prayer appears; align the section to the top.
+  // Auto-scroll new prayer so its top aligns to the top of the viewport (with a small offset)
   React.useEffect(() => {
     if (!generated) return;
     const id = requestAnimationFrame(() => {
       const el = generatedRef.current;
       if (!el) return;
       try {
-        el.scrollIntoView({
+        const top = el.getBoundingClientRect().top + (window.scrollY || window.pageYOffset) - HEADER_OFFSET;
+        window.scrollTo({
+          top,
           behavior: prefersReducedMotion ? "auto" : "smooth",
-          block: "start",
-          inline: "nearest",
         });
-        el.focus?.();
+        // Keep focus accessible without re-scrolling
+        el.focus?.({ preventScroll: true });
       } catch {
-        // no-op
+        /* no-op */
       }
     });
     return () => cancelAnimationFrame(id);
@@ -270,9 +272,8 @@ export default function PrayerForm() {
             id="generated-prayer"
             ref={generatedRef}
             tabIndex={-1}
-            // Give a little breathing room when aligned to the top.
-            // Adjust this number if you later add a sticky header.
-            style={{ scrollMarginTop: 16 }}
+            // If you want spacing while using scrollIntoView in the future, you can also set scrollMarginTop here.
+            style={{ scrollMarginTop: HEADER_OFFSET }}
           >
             <div className="label" style={{ marginBottom: 8 }}>Your Prayer</div>
             <div className="card" style={{ padding: 16 }}>
@@ -294,7 +295,7 @@ export default function PrayerForm() {
       <div className="card">
         <div className="section">
           <h2 style={{ margin: 0, fontSize: 22 }}>Prayer Wall</h2>
-        <p className="note" style={{ marginTop: 6 }}>Most recent {Math.min(wall.length, PAGE_SIZE)} shown first.</p>
+          <p className="note" style={{ marginTop: 6 }}>Most recent {Math.min(wall.length, PAGE_SIZE)} shown first.</p>
         </div>
         <div className="section grid">
           {initialWallLoading && (
