@@ -161,8 +161,9 @@ export default function PrayerForm() {
           <div className="section" aria-live="polite">
             <div className="label" style={{ marginBottom: 8 }}>Your Prayer</div>
             <div className="card" style={{ padding: 16 }}>
-              <div style={{ whiteSpace: "pre-wrap", lineHeight: 1.6 }}>{generated}</div>
-            </div>
+  <div className="prayer-quote" style={{ whiteSpace: "pre-wrap" }}>{generated}</div>
+</div>
+
             <div className="actions" style={{ marginTop: 12 }}>
               <button className="btn" onClick={handleGenerateNew} disabled={loading}>Generate New</button>
               <button className="btn ghost" onClick={handleCopy}>Copy to Clipboard</button>
