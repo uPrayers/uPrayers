@@ -20,7 +20,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <div className="container header-inner">
               <div className="brand">uPrayers</div>
               <nav className="actions">
-                <Link href="/donate" className="btn primary">Donate</Link>
+                <a
+  href="https://buy.stripe.com/your_real_checkout_link"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-flex items-center rounded-2xl px-4 py-2 text-white bg-emerald-600 hover:bg-emerald-700 shadow"
+>
+  Donate
+</a>
+
               </nav>
             </div>
           </header>
