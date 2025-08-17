@@ -57,6 +57,40 @@ export default function PrayerForm() {
   const generateAbortRef = React.useRef<AbortController | null>(null);
   const formRef = React.useRef<HTMLDivElement | null>(null);
 
+  // NEW: a ref for the generated prayer container
+  const generatedRef = React.useRef<HTMLDivElement | null>(null);
+
+  // NEW: helper that respects reduced motion
+  const prefersReducedMotion = React.useMemo(() => {
+    if (typeof window === "undefined" || !("matchMedia" in window)) return false;
+    try {
+      return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    } catch {
+      return false;
+    }
+  }, []);
+
+  // NEW: scroll when a new prayer appears, after it has actually rendered
+  React.useEffect(() => {
+    if (!generated) return;
+    // wait for next paint so layout is ready
+    const id = requestAnimationFrame(() => {
+      const el = generatedRef.current;
+      if (!el) return;
+      try {
+        el.scrollIntoView({
+          behavior: prefersReducedMotion ? "auto" : "smooth",
+          block: "start",
+        });
+        // optional: focus for accessibility
+        el.focus?.();
+      } catch {
+        // ignore scroll failures
+      }
+    });
+    return () => cancelAnimationFrame(id);
+  }, [generated, prefersReducedMotion]);
+
   function showNotice(msg: string) {
     setNotice(msg);
     window.setTimeout(() => setNotice(null), 2000);
@@ -132,10 +166,7 @@ export default function PrayerForm() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to generate prayer");
-      setGenerated(data.prayer);
-
-      // Removed: window.scrollTo({ top: 0, behavior: "smooth" });
-      // (No scroll changes here to preserve stability; we can add external auto-scroll later if desired.)
+      setGenerated(data.prayer); // scrolling is handled by the effect above
     } catch (e: any) {
       if (e?.name !== "AbortError") setError(e.message);
     } finally {
@@ -234,7 +265,14 @@ export default function PrayerForm() {
         </div>
 
         {generated && (
-          <div className="section" aria-live="polite" id="generated-prayer">{/* anchor for future scroll */}
+          <div
+            className="section"
+            aria-live="polite"
+            id="generated-prayer"
+            ref={generatedRef}
+            // Make it focusable for accessibility when we programmatically focus
+            tabIndex={-1}
+          >
             <div className="label" style={{ marginBottom: 8 }}>Your Prayer</div>
             <div className="card" style={{ padding: 16 }}>
               <div style={{ whiteSpace: "pre-wrap", lineHeight: 1.75 }}>{generated}</div>
@@ -259,10 +297,10 @@ export default function PrayerForm() {
         </div>
         <div className="section grid">
           {initialWallLoading && (
-          <div className="card prayer-item" style={{ textAlign: "center", padding: 20 }}>
-            <div style={{ fontSize: 24, marginBottom: 6 }}>🕯️</div>
-            <div className="note">Lighting a candle… loading prayers</div>
-          </div>
+            <div className="card prayer-item" style={{ textAlign: "center", padding: 20 }}>
+              <div style={{ fontSize: 24, marginBottom: 6 }}>🕯️</div>
+              <div className="note">Lighting a candle… loading prayers</div>
+            </div>
           )}
           {!initialWallLoading && wall.length === 0 && (
             <div className="card prayer-item" style={{ textAlign: "center", padding: 20 }}>
