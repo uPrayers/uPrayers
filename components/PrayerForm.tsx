@@ -336,10 +336,7 @@ export default function PrayerForm() {
               {wallBusy ? <>Loading<span className="spinner" /></> : "Load more"}
             </button>
           )}
-          {/* Donate at bottom of wall */}
-          <div className="actions" style={{ marginTop: 8 }}>
-            <a className="btn primary" href={DONATE_URL} target="_blank" rel="noreferrer">Donate</a>
-          </div>
+          {/* Removed the duplicate donate button here to let the page-level DonateSection do the job */}
         </div>
       </div>
     </div>
