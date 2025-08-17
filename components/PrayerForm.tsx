@@ -133,7 +133,9 @@ export default function PrayerForm() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to generate prayer");
       setGenerated(data.prayer);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+
+      // Removed: window.scrollTo({ top: 0, behavior: "smooth" });
+      // (No scroll changes here to preserve stability; we can add external auto-scroll later if desired.)
     } catch (e: any) {
       if (e?.name !== "AbortError") setError(e.message);
     } finally {
@@ -232,7 +234,7 @@ export default function PrayerForm() {
         </div>
 
         {generated && (
-          <div className="section" aria-live="polite">
+          <div className="section" aria-live="polite" id="generated-prayer">{/* anchor for future scroll */}
             <div className="label" style={{ marginBottom: 8 }}>Your Prayer</div>
             <div className="card" style={{ padding: 16 }}>
               <div style={{ whiteSpace: "pre-wrap", lineHeight: 1.75 }}>{generated}</div>
