@@ -27,7 +27,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </header>
           <main className="container site-main fade-in">{children}</main>
           <footer className="site-footer">
-            <div className="container">© {new Date().getFullYear()} uPrayers</div>
           </footer>
         </div>
       </body>
