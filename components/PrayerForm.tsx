@@ -39,29 +39,9 @@ export default function PrayerForm() {
       }
 
       setPrayer(data.prayer);
-
-      // Smoothly scroll to the generated prayer after the DOM updates
-      setTimeout(() => {
-        const el = document.getElementById("generated-prayer");
-        if (el) {
-          el.scrollIntoView({ behavior: "smooth", block: "start" });
-        } else {
-          window.location.hash = "#generated-prayer";
-        }
-      }, 0);
     } catch (err) {
       console.error(err);
       setPrayer("We couldn’t generate a prayer right now. Please try again.");
-
-      // Also scroll to the message so the user sees it
-      setTimeout(() => {
-        const el = document.getElementById("generated-prayer");
-        if (el) {
-          el.scrollIntoView({ behavior: "smooth", block: "start" });
-        } else {
-          window.location.hash = "#generated-prayer";
-        }
-      }, 0);
     } finally {
       setLoading(false);
     }
@@ -115,15 +95,14 @@ export default function PrayerForm() {
         </button>
       </form>
 
-      {/* Scroll target (always present so anchors work) */}
-      <div id="generated-prayer" className="mt-8">
-        {prayer && (
+      {prayer && (
+        <div id="generated-prayer" className="mt-8">
           <article className="rounded-xl border p-4 bg-white/70">
             <h3 className="mb-2 text-lg font-semibold">Your Prayer</h3>
             <p className="whitespace-pre-line">{prayer}</p>
           </article>
-        )}
-      </div>
+        </div>
+      )}
     </section>
   );
 }
