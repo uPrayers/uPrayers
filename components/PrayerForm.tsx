@@ -57,10 +57,10 @@ export default function PrayerForm() {
   const generateAbortRef = React.useRef<AbortController | null>(null);
   const formRef = React.useRef<HTMLDivElement | null>(null);
 
-  // NEW: a ref for the generated prayer container
+  // Ref for the generated prayer section
   const generatedRef = React.useRef<HTMLDivElement | null>(null);
 
-  // NEW: helper that respects reduced motion
+  // Respect user preference for reduced motion
   const prefersReducedMotion = React.useMemo(() => {
     if (typeof window === "undefined" || !("matchMedia" in window)) return false;
     try {
@@ -70,10 +70,9 @@ export default function PrayerForm() {
     }
   }, []);
 
-  // NEW: scroll when a new prayer appears, after it has actually rendered
+  // Auto-scroll when a new prayer appears; align the section to the top.
   React.useEffect(() => {
     if (!generated) return;
-    // wait for next paint so layout is ready
     const id = requestAnimationFrame(() => {
       const el = generatedRef.current;
       if (!el) return;
@@ -81,11 +80,11 @@ export default function PrayerForm() {
         el.scrollIntoView({
           behavior: prefersReducedMotion ? "auto" : "smooth",
           block: "start",
+          inline: "nearest",
         });
-        // optional: focus for accessibility
         el.focus?.();
       } catch {
-        // ignore scroll failures
+        // no-op
       }
     });
     return () => cancelAnimationFrame(id);
@@ -166,7 +165,7 @@ export default function PrayerForm() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to generate prayer");
-      setGenerated(data.prayer); // scrolling is handled by the effect above
+      setGenerated(data.prayer); // scrolling handled by effect above
     } catch (e: any) {
       if (e?.name !== "AbortError") setError(e.message);
     } finally {
@@ -270,8 +269,10 @@ export default function PrayerForm() {
             aria-live="polite"
             id="generated-prayer"
             ref={generatedRef}
-            // Make it focusable for accessibility when we programmatically focus
             tabIndex={-1}
+            // Give a little breathing room when aligned to the top.
+            // Adjust this number if you later add a sticky header.
+            style={{ scrollMarginTop: 16 }}
           >
             <div className="label" style={{ marginBottom: 8 }}>Your Prayer</div>
             <div className="card" style={{ padding: 16 }}>
@@ -293,7 +294,7 @@ export default function PrayerForm() {
       <div className="card">
         <div className="section">
           <h2 style={{ margin: 0, fontSize: 22 }}>Prayer Wall</h2>
-          <p className="note" style={{ marginTop: 6 }}>Most recent {Math.min(wall.length, PAGE_SIZE)} shown first.</p>
+        <p className="note" style={{ marginTop: 6 }}>Most recent {Math.min(wall.length, PAGE_SIZE)} shown first.</p>
         </div>
         <div className="section grid">
           {initialWallLoading && (
