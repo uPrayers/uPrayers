@@ -38,7 +38,7 @@ const PAGE_SIZE = 20; // show most recent 20 before "Load more"
 const LS_KEYS = { name: "upr_name", location: "upr_location", religion: "upr_religion" } as const;
 
 // If you add a sticky header later, bump this number to match its height.
-const HEADER_OFFSET = 25;
+const HEADER_OFFSET = 5;
 
 export default function PrayerForm() {
   const [name, setName] = React.useState<string>("");
