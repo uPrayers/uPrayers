@@ -138,7 +138,7 @@ h2{ font-size: 22px; margin: 0; }
   border-color: var(--upr-amber-500);
   box-shadow: 0 0 0 3px var(--upr-ring);
 }
-.textarea{ min-height: 100px; resize: vertical; }
+.textarea{ min-height: 80px; resize: vertical; }
 
 /* Buttons */
 .btn{
