@@ -1,181 +1,114 @@
 /* --- Reset & base --- */
-* { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; }
+*,
+*::before,
+*::after { box-sizing: border-box; }
 
-/* === uPrayers Warm Theme Tokens === */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+/* --- Theme (warm + comforting) --- */
 :root{
-  /* Palette */
-  --upr-bg: #f9f5f0;            /* page background */
-  --upr-surface: #fffaf3;       /* cards / surfaces */
-  --upr-ink: #2a2119;           /* main text */
-  --upr-muted: #6b6158;         /* secondary text */
+  --bg: #fffaf6;             /* parchment-warm fallback */
+  --card: #ffffff;
+  --text: #2b1f16;           /* cocoa/brownish */
+  --muted: #6f6156;          /* soft taupe */
+  --primary: #b77b4f;        /* copper */
+  --radius: 12px;
 
-  --upr-amber-300: #fcd34d;
-  --upr-amber-400: #fbbf24;
-  --upr-amber-500: #f59e0b;     /* primary button */
-  --upr-amber-600: #d97706;
+  /* Overlay strength: raise to 0.70–0.80 for softer image / higher contrast */
+  --veil-opacity: 0.62;
 
-  /* Effects */
-  --upr-ring: rgba(245, 158, 11, 0.35);
-  --upr-shadow: 0 10px 30px rgba(68, 44, 16, 0.12);
-  --upr-border: 1px solid rgba(68, 44, 16, 0.08);
-
-  /* Radius */
-  --upr-radius: 16px;
+  /* Optional: subtle top/bottom dark framing for extra legibility */
+  --frame-top: rgba(0,0,0,0.25);
+  --frame-bot: rgba(0,0,0,0.20);
 }
 
-/* Gentle background glow + base typography */
+/* --- Typography & defaults --- */
 body {
-  color: var(--upr-ink);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  line-height: 1.55;
+  color: var(--text);
+  background-color: var(--bg);
+
+  /* Full-site background skin (static on scroll) */
+  background-image: url('/sea-7598498_1280.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+
+  /* Ensure the overlay can sit beneath content */
+  position: relative;
+  min-height: 100%;
+  isolation: isolate; /* creates a clean stacking context */
+}
+
+/* --- Readability veil over the image --- */
+body::before{
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+
+  /* Warm veil + slight top/bottom vignette for clarity */
   background:
-    radial-gradient(1200px 520px at 15% -10%, rgba(251, 191, 36, 0.12), transparent 60%),
-    radial-gradient(1200px 520px at 85% -15%, rgba(245, 158, 11, 0.10), transparent 60%),
-    var(--upr-bg);
-  font-family: var(--font-sans), system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
+    linear-gradient(to bottom,
+      var(--frame-top) 0%,
+      rgba(255,255,255,0) 25%,
+      rgba(255,255,255,0) 75%,
+      var(--frame-bot) 100%
+    ),
+    rgba(255, 250, 246, var(--veil-opacity));
+
+  /* Sit below all content but above the background image */
+  z-index: 0;
 }
 
-/* Headings use the serif set from layout fonts */
-h1, h2, h3, h4 { font-family: var(--font-serif), Georgia, "Times New Roman", serif; }
+/* Make app content render above the veil */
+#__next, main, .app-root { position: relative; z-index: 1; }
 
-/* Containers & chrome */
-.container{
-  width: 100%;
-  max-width: 880px;
-  margin: 0 auto;
-  padding: 20px;
-}
+/* --- Elements --- */
+a { color: var(--primary); text-underline-offset: 3px; }
+a:hover { opacity: 0.9; }
 
-.site-header{
-  position: sticky; top: 0; z-index: 10;
-  backdrop-filter: saturate(160%) blur(8px);
-  background:
-    linear-gradient(to bottom, rgba(255,255,255,0.70), rgba(255,255,255,0.55)),
-    color-mix(in oklab, var(--upr-bg), #fff 30%);
-  border-bottom: var(--upr-border);
-}
-.header-inner{ display:flex; align-items:center; justify-content:space-between; min-height:66px; }
-.brand{
-  font-weight: 800; letter-spacing: .2px; font-size: 22px;
-  position: relative; padding-left: 10px;
-}
-.brand::before{
-  content: "✦"; /* neutral, spiritual spark */
-  position: absolute; left: -2px; top: 50%; transform: translateY(-50%);
-  opacity: .8; font-size: 14px;
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
 }
 
-.site-main{ padding: 28px 0 40px; }
-.site-footer{
-  padding: 36px 0;
-  color: var(--upr-muted);
-  font-size: 13px;
-  background: #fff;
-  border-top: var(--upr-border);
-}
-
-/* Cards */
-.card{
-  background: var(--upr-surface);
-  border-radius: var(--upr-radius);
-  box-shadow: var(--upr-shadow);
-  border: var(--upr-border);
-}
-.section{ padding: 18px; }
-.section + .section{ border-top: 1px dashed rgba(68, 44, 16, 0.10); }
-
-/* Headings & lead */
-h1{ font-size: 30px; margin: 0 0 6px; }
-h2{ font-size: 22px; margin: 0; }
-.lead{ color: var(--upr-muted); margin: 0 0 18px; line-height: 1.6; }
-
-/* Inputs */
-.label{ font-size: 12px; color: var(--upr-muted); margin-bottom: 6px; display:block; }
-.input, .select, .textarea{
-  width: 100%;
-  padding: 11px 13px;
-  border: 1px solid rgba(68, 44, 16, 0.18);
-  border-radius: 12px;
-  background: #fffdfa;
-  color: var(--upr-ink);
-  outline: none;
-  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
-}
-.input:focus, .select:focus, .textarea:focus{
-  border-color: var(--upr-amber-500);
-  box-shadow: 0 0 0 3px var(--upr-ring);
-}
-.textarea{ min-height: 130px; resize: vertical; }
-
-/* Buttons */
-.btn{
-  appearance: none;
-  border: 1px solid transparent;
-  background: #fffdfa;
-  color: var(--upr-ink);
-  padding: 10px 14px;
-  border-radius: 12px;
-  font-weight: 700;
+button {
   cursor: pointer;
-  transition: transform .06s ease, background .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease;
-}
-.btn:hover{ transform: translateY(-1px); }
-.btn:disabled{ opacity: .65; cursor: not-allowed; transform: none; }
-
-.btn.primary{
-  background: var(--upr-amber-500);
+  border: 0;
+  border-radius: var(--radius);
+  padding: 0.7rem 1rem;
+  background: var(--primary);
   color: #fff;
-  border-color: transparent;
-}
-.btn.primary:hover{ background: var(--upr-amber-600); }
-
-.btn.ghost{
-  background: #fffdfa;
-  border: 1px solid rgba(68, 44, 16, 0.18);
-  color: var(--upr-ink);
-}
-.btn.ghost:hover{ border-color: rgba(68, 44, 16, 0.28); }
-
-/* Layout helpers */
-.grid{ display:grid; gap: 12px; }
-.actions{ display:flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-
-/* Messages */
-.note{ font-size: 13px; color: var(--upr-muted); }
-.error{
-  color: #8b2121; background: #fde6e3; border: 1px solid #f4b0a9;
-  padding: 10px 12px; border-radius: 12px;
 }
 
-/* Wall items */
-.prayer-item{ padding: 14px; }
-.meta{ color: var(--upr-muted); font-size: 12px; display:flex; gap:6px; flex-wrap:wrap; }
-
-/* Generated prayer “blockquote” look */
-.prayer-quote{
-  padding: 14px 16px;
-  background: linear-gradient(to right, rgba(245, 158, 11, 0.10), rgba(245, 158, 11, 0));
-  border-left: 3px solid var(--upr-amber-500);
-  border-radius: 10px;
-  font-style: italic;
-  line-height: 1.7;
+.card {
+  background: color-mix(in oklab, var(--card) 90%, transparent);
+  backdrop-filter: saturate(120%) blur(2px);
+  border-radius: var(--radius);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+  padding: 1rem;
 }
 
-/* Spinner */
-.spinner{
-  width: 16px; height: 16px; border-radius: 50%;
-  border: 2px solid rgba(255,255,255,.6);
-  border-top-color: #fff;
-  animation: spin 1s linear infinite;
-  display:inline-block; vertical-align: middle; margin-left: 8px;
+/* --- Utilities --- */
+.container {
+  max-width: 900px;
+  margin-inline: auto;
+  padding-inline: 1rem;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
 
-/* Subtle entrance */
-.fade-in { animation: fade .24s ease-out both; }
-@keyframes fade { from { opacity: .0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+.muted { color: var(--muted); }
 
-/* Respect reduced motion */
+/* Respect users who prefer less motion */
 @media (prefers-reduced-motion: reduce) {
-  .fade-in { animation: none; }
-  .btn:hover{ transform: none; }
+  * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
