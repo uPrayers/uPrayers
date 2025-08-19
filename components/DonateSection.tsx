@@ -15,14 +15,16 @@ export default function DonateSection() {
             to maintain the site and spread hope worldwide.
           </p>
 
-          <a
-            href={DONATE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn primary mt-4"
-          >
-            Donate with Stripe
-          </a>
+          <div className="mt-4">
+            <a
+              href={DONATE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn primary"
+            >
+              Donate with Stripe
+            </a>
+          </div>
         </div>
       </div>
     </section>
