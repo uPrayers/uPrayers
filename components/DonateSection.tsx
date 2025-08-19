@@ -20,7 +20,7 @@ export default function DonateSection() {
               href={DONATE_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn primary"
+              className="btn primary mt-6"
             >
               Donate with Stripe
             </a>
