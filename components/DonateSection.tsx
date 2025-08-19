@@ -11,7 +11,10 @@ export default function DonateSection() {
         <div className="card section text-center">
           <h2 id="support-heading">Support uPrayers</h2>
 
-          <p className="lead mb-4">
+          <p
+            className="lead"
+            style={{ marginBottom: "16px" }} // force a blank line above the button
+          >
             Your donation helps us keep the prayers flowing. We rely on generous hearts like yours
             to maintain the site and spread hope worldwide.
           </p>
