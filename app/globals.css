@@ -213,3 +213,8 @@ h2{ font-size: 22px; margin: 0; }
   .fade-in { animation: none; }
   .btn:hover{ transform: none; }
 }
+
+/* === Custom tweak: tighten intro-to-form spacing only === */
+.site-main .lead {
+  margin-bottom: 12px;
+}
