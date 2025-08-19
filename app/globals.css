@@ -216,5 +216,5 @@ h2{ font-size: 22px; margin: 0; }
 
 /* === Custom tweak: tighten intro-to-form spacing only === */
 .site-main .lead {
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
