@@ -11,7 +11,7 @@ export default function DonateSection() {
         <div className="card section text-center">
           <h2 id="support-heading">Support uPrayers</h2>
 
-          <p className="lead">
+          <p className="lead mb-4">
             Your donation helps us keep the prayers flowing. We rely on generous hearts like yours
             to maintain the site and spread hope worldwide.
           </p>
@@ -20,7 +20,7 @@ export default function DonateSection() {
             href={DONATE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn primary inline-block mt-6"
+            className="btn primary"
           >
             Donate with Stripe
           </a>
