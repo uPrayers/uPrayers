@@ -225,7 +225,7 @@ export default function PrayerForm() {
       <div className="card" aria-busy={loading} ref={formRef}>
         <div className="section">
           <h1>uPrayers</h1>
-          <p className="lead">Share your situation, choose your tradition, and receive a short, compassionate prayer. You can post it to the wall for others to see.</p>
+          <p className="lead">Share your situation, choose your religion, and receive a short, compassionate prayer. You can post it to the wall for others to see.</p>
           {notice && <div className="note" role="status" aria-live="polite">{notice}</div>}
           {error && <div className="error" role="alert">{error}</div>}
         </div>
