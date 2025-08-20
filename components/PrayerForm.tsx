@@ -294,22 +294,18 @@ export default function PrayerForm() {
           </div>
 
           {/* Remember me toggle */}
-          <div className="grid" style={{ marginTop: 10 }}>
-            <label className="label" htmlFor="remember">Preferences</label>
-            <div className="note" style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <input
-                id="remember"
-                type="checkbox"
-                checked={remember}
-                onChange={(e) => setRemember(e.target.checked)}
-                aria-describedby="remember-help"
-              />
-              <span>Remember my name, location, and faith on this device</span>
-            </div>
-            <div id="remember-help" className="note" style={{ marginTop: 4 }}>
-              When off, fields reset every time you reopen the site.
-            </div>
-          </div>
+<div className="grid" style={{ marginTop: 10 }}>
+  <div className="note" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+    <input
+      id="remember"
+      type="checkbox"
+      checked={remember}
+      onChange={(e) => setRemember(e.target.checked)}
+    />
+    <span>Remember my name, location, and faith on this device</span>
+  </div>
+</div>
+
 
           <div className="grid" style={{ marginTop: 10 }}>
             <label className="label" htmlFor="situation">What do you want prayer for?</label>
