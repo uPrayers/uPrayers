@@ -4,7 +4,7 @@ import { MODEL } from "./openai";
 import OpenAI from "openai";
 
 export function buildSystemPrompt() {
-  return "You write compassionate prayers. Keep it about 6–8 sentences (roughly one solid paragraph). Match the selected religion's tone while staying welcoming.";
+  return "You are a spiritual prayer writer. Your prayers are brief, compassionate, and uplifting. Use 4–8 sentences (roughly one paragraph). Match the tone and traditions of the faith provided, while keeping the words gentle and welcoming for anyone to read. Offer comfort, hope, and a sense of presence.";
 }
 
 export function buildUserPrompt({ religion, name, location, situation }: GeneratePrayerInput) {
