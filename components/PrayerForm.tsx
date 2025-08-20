@@ -23,7 +23,7 @@ type Prayer = {
 const RELIGIONS: string[] = [
   "Catholic",
   "Protestant",
-  "Non-Denominational",
+  "Non-Denominational Christian",
   "Latter-day Saint",
   "Orthodox",
   "Jewish",
