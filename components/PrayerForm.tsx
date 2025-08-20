@@ -2,7 +2,7 @@
 import React from "react";
 
 // Clean UI/UX version WITHOUT any share code.
-// - LocalStorage for name/location/religion
+// - Optional persistence via "Remember me" (session-style default)
 // - Textarea autosize
 // - Friendly loading states
 // - Name, Location, Faith order on the wall
@@ -36,11 +36,14 @@ const RELIGIONS: string[] = [
 
 const PAGE_SIZE = 20; // show most recent 20 before "Load more"
 const LS_KEYS = { name: "upr_name", location: "upr_location", religion: "upr_religion" } as const;
+const REMEMBER_KEY = "upr_remember";
 
 // If you add a sticky header later, bump this number to match its height.
 const HEADER_OFFSET = 85;
 
 export default function PrayerForm() {
+  const [remember, setRemember] = React.useState<boolean>(false);
+
   const [name, setName] = React.useState<string>("");
   const [location, setLocation] = React.useState<string>("");
   const [religion, setReligion] = React.useState<string>("Protestant");
@@ -97,21 +100,66 @@ export default function PrayerForm() {
     window.setTimeout(() => setNotice(null), 2000);
   }
 
-  // --- Local storage hydration/persistence ---
+  // --- Remember toggle: load once on mount ---
   React.useEffect(() => {
     try {
-      const n = localStorage.getItem(LS_KEYS.name);
-      const l = localStorage.getItem(LS_KEYS.location);
-      const r = localStorage.getItem(LS_KEYS.religion);
-      if (n) setName(n);
-      if (l) setLocation(l);
-      if (r && RELIGIONS.includes(r)) setReligion(r);
-    } catch {}
+      const r = localStorage.getItem(REMEMBER_KEY) === "1";
+      setRemember(r);
+      if (r) {
+        const n = localStorage.getItem(LS_KEYS.name);
+        const l = localStorage.getItem(LS_KEYS.location);
+        const rr = localStorage.getItem(LS_KEYS.religion);
+        if (n) setName(n);
+        if (l) setLocation(l);
+        if (rr && RELIGIONS.includes(rr)) setReligion(rr);
+      }
+    } catch {
+      /* no-op */
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  React.useEffect(() => { try { localStorage.setItem(LS_KEYS.name, name); } catch {} }, [name]);
-  React.useEffect(() => { try { localStorage.setItem(LS_KEYS.location, location); } catch {} }, [location]);
-  React.useEffect(() => { try { localStorage.setItem(LS_KEYS.religion, religion); } catch {} }, [religion]);
+
+  // --- Persist name/location/religion only if remember === true ---
+  React.useEffect(() => {
+    try {
+      localStorage.setItem(REMEMBER_KEY, remember ? "1" : "0");
+      if (!remember) {
+        // Clear any previously saved values when turning off
+        localStorage.removeItem(LS_KEYS.name);
+        localStorage.removeItem(LS_KEYS.location);
+        localStorage.removeItem(LS_KEYS.religion);
+      } else {
+        // When on, immediately store current values
+        localStorage.setItem(LS_KEYS.name, name);
+        localStorage.setItem(LS_KEYS.location, location);
+        localStorage.setItem(LS_KEYS.religion, religion);
+      }
+    } catch {
+      /* no-op */
+    }
+  }, [remember]); // only when the toggle changes
+
+  // When remember is ON, keep values in sync; when OFF, do nothing
+  React.useEffect(() => {
+    if (!remember) return;
+    try {
+      localStorage.setItem(LS_KEYS.name, name);
+    } catch {}
+  }, [remember, name]);
+
+  React.useEffect(() => {
+    if (!remember) return;
+    try {
+      localStorage.setItem(LS_KEYS.location, location);
+    } catch {}
+  }, [remember, location]);
+
+  React.useEffect(() => {
+    if (!remember) return;
+    try {
+      localStorage.setItem(LS_KEYS.religion, religion);
+    } catch {}
+  }, [remember, religion]);
 
   // --- Textarea autosize ---
   React.useEffect(() => {
@@ -244,6 +292,25 @@ export default function PrayerForm() {
               {RELIGIONS.map(r => <option key={r}>{r}</option>)}
             </select>
           </div>
+
+          {/* Remember me toggle */}
+          <div className="grid" style={{ marginTop: 10 }}>
+            <label className="label" htmlFor="remember">Preferences</label>
+            <div className="note" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <input
+                id="remember"
+                type="checkbox"
+                checked={remember}
+                onChange={(e) => setRemember(e.target.checked)}
+                aria-describedby="remember-help"
+              />
+              <span>Remember my name, location, and faith on this device</span>
+            </div>
+            <div id="remember-help" className="note" style={{ marginTop: 4 }}>
+              When off, fields reset every time you reopen the site.
+            </div>
+          </div>
+
           <div className="grid" style={{ marginTop: 10 }}>
             <label className="label" htmlFor="situation">What do you want prayer for?</label>
             <textarea
@@ -272,7 +339,6 @@ export default function PrayerForm() {
             id="generated-prayer"
             ref={generatedRef}
             tabIndex={-1}
-            // If you want spacing while using scrollIntoView in the future, you can also set scrollMarginTop here.
             style={{ scrollMarginTop: HEADER_OFFSET }}
           >
             <div className="label" style={{ marginBottom: 8 }}>Your Prayer</div>
@@ -336,7 +402,7 @@ export default function PrayerForm() {
               {wallBusy ? <>Loading<span className="spinner" /></> : "Load more"}
             </button>
           )}
-          {/* Removed the duplicate donate button here to let the page-level DonateSection do the job */}
+          {/* Kept the page-level DonateSection responsible for an extra donate button if desired */}
         </div>
       </div>
     </div>
