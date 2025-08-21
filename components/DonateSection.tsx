@@ -15,7 +15,7 @@ export default function DonateSection() {
             className="lead"
             style={{ marginBottom: "16px" }} // force a blank line above the button
           >
-            Your donation helps us keep the prayers flowing. We rely on generous hearts like yours
+            Your support helps us keep the prayers flowing. We rely on generous hearts like yours
             to maintain the site and spread hope worldwide.
           </p>
 
