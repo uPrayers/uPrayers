@@ -347,7 +347,7 @@ export default function PrayerForm() {
               <button className="btn primary" onClick={handlePostToWall} disabled={postBusy}>
                 {postBusy ? <>Posting<span className="spinner" /></> : "Post to Prayer Wall"}
               </button>
-              <a className="btn ghost" href={DONATE_URL} target="_blank" rel="noreferrer">Donate</a>
+              <a className="btn ghost" href={DONATE_URL} target="_blank" rel="noreferrer">Support This Site</a>
             </div>
           </div>
         )}
