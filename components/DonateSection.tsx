@@ -25,7 +25,7 @@ export default function DonateSection() {
             rel="noopener noreferrer"
             className="btn primary"
           >
-            Donate
+            Support This Site
           </a>
         </div>
       </div>
