@@ -10,7 +10,7 @@ export default function DonateButton() {
       className="btn primary"   // ✅ match your site’s button style
       role="button"
     >
-      Donate
+      Support This Site
     </a>
   );
 }
